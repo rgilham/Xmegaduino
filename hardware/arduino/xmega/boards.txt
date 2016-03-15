@@ -144,3 +144,19 @@ akafuino.bootloader.file=akafuino/akafuino-boot.hex
 akafuino.bootloader.fuse2=0xBF
 #akafuino.bootloader.fuse4=0xFE
 akafuino.bootloader.fuse5=0xFD
+
+
+##############################################################
+
+inventech.name=Inventech gsm-mote
+
+inventech.build.mcu=atxmega256a3u
+inventech.build.f_cpu=32000000L
+inventech.build.core=xmega
+inventech.build.variant=gsm256
+inventech.build.board=XMEGA_GSM_MOTE
+
+inventech.upload.tool=dfu-programmer
+inventech.upload.maximum_size=262144
+
+#############################################################

@@ -10,3 +10,5 @@ avrisppdi.name=avrisp pdi
 avrisppdi.communication=usb
 avrisppdi.protocol=avrisp2
 
+dfu-programmer.name=dfu 
+avrisppdi.communication=usb

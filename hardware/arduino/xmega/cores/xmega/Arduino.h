@@ -151,7 +151,7 @@ extern const uint8_t PROGMEM adc_to_channel_PGM[];
 #define timerToTC0(T) ( (volatile TC0_t *)( pgm_read_word( timer_to_tc0_PGM + (T))) )
 #define timerToTC1(T) ( (volatile TC1_t *)( pgm_read_word( timer_to_tc1_PGM + (T))) )
 #if defined(TCC2) || defined(TCD2)
-#define timerToTC2(T) ( (volatile TC2_t *)( pgm_read_word( timer_to_tc2_PGM + (T))) )
+#define timerToTC2(T) ( (volatile TC2_t *)( pgm_read_word( timer_to_tc2_PGM + (T-TIMER_C2LA))) )
 #endif
 #define timerToChannel(T) ( (uint8_t)( pgm_read_word( timer_to_channel_PGM + (T))) )
 #define adcToChannel(P) ( (uint8_t)( pgm_read_word( adc_to_channel_PGM + (P))) )

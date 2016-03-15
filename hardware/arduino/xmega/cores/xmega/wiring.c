@@ -44,6 +44,7 @@
 #endif
 
 volatile unsigned long millis_count = 0;
+volatile uint16_t milliSecCount = 1000;
 volatile unsigned long seconds_count = 0;
 #if defined(USE_RTC)
 volatile unsigned long rtc_millis = 0;
@@ -153,14 +154,15 @@ ISR(TCF0_OVF_vect)
 {
 	/// TODO: Do we need to call cli()?
 	++millis_count;
-        EVSYS.STROBE = 0xF;
+        //EVSYS.STROBE = 0xF;
+	milliSecCount--;
+	if (!milliSecCount)
+	{
+	  milliSecCount = 1000;
+	  ++seconds_count;
+	}
 }
 
-ISR(TCF1_OVF_vect)
-{
-	/// TODO: Do we need to call cli()?
-	++seconds_count;
-}
 
 unsigned long millis(void)
 {
@@ -169,7 +171,7 @@ unsigned long millis(void)
 
 	uint8_t oldSREG = SREG; // Save and restore the interrupt enable bit
 	cli();
-	unsigned long result = seconds_count*1000UL + TCF1.CNT;
+	unsigned long result = seconds_count*1000UL + (1000-milliSecCount);
 	SREG = oldSREG;
 
 	return result + millis_count;
@@ -184,7 +186,7 @@ uint64_t micros_huge(void) {
         // If so TCF1 count may be updated even when interrupts are off.
 	uint8_t oldSREG = SREG; // Save and restore the interrupt enable bit
 	cli();
-	uint64_t result = ((uint64_t)seconds_count)*1000000UL + TCF1.CNT*1000UL + (TCF0.CNT>>2);
+	uint64_t result = ((uint64_t)seconds_count)*1000000UL + (1000-milliSecCount)*1000UL + (TCF0.CNT>>2);
 	SREG = oldSREG;
 
 	return result;
@@ -199,7 +201,7 @@ unsigned long micros(void) {
         // If so TCF1 count may be updated even when interrupts are off.
 	uint8_t oldSREG = SREG; // Save and restore the interrupt enable bit
 	cli();
-	unsigned long result = seconds_count*1000000UL + millis_count*1000 + TCF1.CNT*1000UL + (TCF0.CNT>>2);
+	unsigned long result = seconds_count*1000000UL + millis_count*1000 + (1000-milliSecCount)*1000UL + (TCF0.CNT>>2);
 	SREG = oldSREG;
 
 	return result;
@@ -292,11 +294,12 @@ void init()
 //      EVSYS.CH0MUX  = EVSYS_CHMUX_TCF0_OVF_gc;
         TCF0.INTCTRLA = TC_OVFINTLVL_HI_gc;
 
-        TCF1.CTRLA    = TC_CLKSEL_EVCH0_gc;
-        TCF1.PERBUF   = 1000;
-        TCF1.CTRLB    = ( TCF1.CTRLB & ~TC1_WGMODE_gm ) | TC_WGMODE_NORMAL_gc;
-        TCF1.CTRLD    = TC_EVACT_UPDOWN_gc | TC1_EVDLY_bm;
-        TCF1.INTCTRLA = TC_OVFINTLVL_HI_gc;
+	//TCF1 is not available on all micros done in software instead
+//        TCF1.CTRLA    = TC_CLKSEL_EVCH0_gc;
+//        TCF1.PERBUF   = 1000;
+//        TCF1.CTRLB    = ( TCF1.CTRLB & ~TC1_WGMODE_gm ) | TC_WGMODE_NORMAL_gc;
+//        TCF1.CTRLD    = TC_EVACT_UPDOWN_gc | TC1_EVDLY_bm;
+//        TCF1.INTCTRLA = TC_OVFINTLVL_HI_gc;
 #endif
 
 #if defined(TCC2) || defined(TCD2)
@@ -389,7 +392,11 @@ static void initAdc( ADC_t* adc ) {
                      ;
 
         // TODO: What should we use as analog ref?
-        adc->REFCTRL = ADC_REFSEL_VCC_gc   // VCC/1.6 analog ref
+#if defined (__AVR_ATxmega256A3U__)		     
+        adc->REFCTRL = ADC_REFSEL_INTVCC_gc   // VCC/1.6 analog ref
+#else
+	adc->REFCTRL = ADC_REFSEL_VCC_gc   // VCC/1.6 analog ref
+#endif
                      | 0 << ADC_BANDGAP_bp // bandgap not enabled
                      | 0 << ADC_TEMPREF_bp // temerature reference not enabled
                      ;

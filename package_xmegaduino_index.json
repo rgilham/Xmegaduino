@@ -22,7 +22,8 @@
             {"name": "Akafuino X"},
             {"name": "Apitronics Bee"},
             {"name": "Sparkfun Xmega"},
-            {"name": "XPlain"}
+            {"name": "XPlain"},
+            {"name": "Inventech gsm-mote"}
           ]
         }
       ],
