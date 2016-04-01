@@ -156,7 +156,15 @@ inventech.build.core=xmega
 inventech.build.variant=gsm256
 inventech.build.board=XMEGA_GSM_MOTE
 
-inventech.upload.tool=dfu-programmer
+inventech.menu.programmer.dfu=DFU
+inventech.menu.programmer.dfu.using=dfuprogrammer
+inventech.menu.programmer.pdi=PDI
+inventech.menu.programmer.pdi.using=dragonpdi
+
+inventech.upload.tool=dfuprogrammer
 inventech.upload.maximum_size=262144
+
+
+
 
 #############################################################
