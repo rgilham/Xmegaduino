@@ -215,7 +215,6 @@ void delayMicroseconds(unsigned int us)
         while (micros() - start <= us);
 }
 #endif // USE_RTC
-
 void delay(unsigned long ms)
 {
 	unsigned long start = millis();

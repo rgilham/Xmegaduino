@@ -32,7 +32,7 @@
 // using a ring buffer (I think), in which rx_buffer_head is the index of the
 // location to which to write the next incoming character and rx_buffer_tail
 // is the index of the location from which to read.
-#define RX_BUFFER_SIZE 180
+#define RX_BUFFER_SIZE 32
 
 struct ring_buffer
 {
@@ -53,6 +53,7 @@ inline void store_char(unsigned char c, ring_buffer *rx_buffer)
     rx_buffer->buffer[rx_buffer->head] = c;
     rx_buffer->head = i;
   }
+
 }
 
 // Constructors ////////////////////////////////////////////////////////////////

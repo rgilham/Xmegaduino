@@ -42,7 +42,7 @@ class HardwareSerial : public Stream
         uint8_t     in_bm,
         uint8_t     out_bm);
     void begin(unsigned long);
-    void begin(unsigned long baud, byte config);
+    void begin(unsigned long baud, uint8_t config);
     void end();
     virtual int available(void);
     virtual int peek(void);
